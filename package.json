@@ -3,7 +3,11 @@
   "dependencies": {
     "mocha": "^11.7.5"
   },
+  "devDependencies": {
+    "coffeescript": "^2.7.0"
+  },
   "scripts": {
+    "build": "coffee -o ./out/ -c ./src/*.coffee",
     "test": "mocha"
   }
 }

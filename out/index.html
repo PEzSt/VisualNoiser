@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+   <link rel="stylesheet" type="text/css" href="./style.css">
+    <script
+	src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+	integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+	crossorigin="anonymous"
+	defer>
+    </script>
+    <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+      <div class="toolbar">
+
+	<div class="t-divider"></div>
+
+	<div class="t-group">
+	    <select name="noise_sel" id="noise_sel">
+		<option value="random"> Random Noise</option>
+		<option value="gauss"> Gaussian Noise</option>
+		<option value="fwhite"> Full White</option>
+		<option value="fblack"> Full Black</option>
+		<option value="half">   Half Half</option>
+		<option value="perlin"> Perlin Noise</option>
+	    </select>
+	</div>
+
+	<div class="t-divider"></div>
+	
+	<div class="t-group">
+	    <select name="gen_sel" id="gen_sel">
+		<option value="regen">  Regenerate</option>
+		<option value="scroll"> Scroll</option>
+		<option value="smooth"> Smooth</option>
+	    </select>
+	</div>
+
+	<div class="t-divider"></div>
+	
+	<div class="t-group">
+	    <select name="res_sel" id="res_sel">
+		<option value="2">   2x2     </option>
+		<option value="4">   4x4     </option>
+		<option value="8">   8x8     </option>
+		<option value="16">  16x16   </option>
+		<option value="32">  32x32   </option>
+		<option value="64">  64x64   </option>
+		<option value="128"> 128x128 </option>
+		<option value="256"> 256x256 </option>
+		<option value="512"> 512x512 </option>
+	    </select>
+	</div>
+
+	<div class="t-divider"></div>
+
+	<div class="t-group">
+	  <label for="smooth_slider">Smooth</label>
+	  <input type="range" min="0" max="100" value="10" class="slider" id="smooth_slider">
+	</div>
+	<div class="t-divider"></div>
+	<div class="t-group">
+	  <label for="speed_slider">Speed</label>
+	  <input type="range" min="0" max="400" value="20" class="slider" id="speed_slider">
+	</div>
+
+	<div class="t-divider"></div>
+
+	<div class="t-group">
+	    <button id="regen">
+		Regenerate
+	    </button>
+	    <button id="recompile">
+		Recompile Shaders
+	    </button>
+	    <button id="startstop">
+		Start/Stop
+	    </button>
+	    <button id="play_sound" style="display: inline-flex; align-items: center;
+					   justify-content: center; padding-left: 0.5rem;
+					   padding-right: 0.5rem;" aria-label="Toggle Sound">
+	      <svg style="display: block; flex-shrink: 0;" xmlns="http://w3.org" width="12" height="12"
+		   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+		   stroke-linejoin="round">
+		    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+		    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+		    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+		</svg>
+	    </button>
+	</div>
+    </div>
+    <details class="shaders">
+    <summary>Shaders</summary>
+    <div class="shader-row">
+	<div class="shader-col">
+	    <label for="vs">Vertex</label>
+	    <textarea name="vertex"   id="vs" rows="16" cols="60"></textarea>
+	</div>
+	<div class="shader-col">
+	    <label for="fs">Fragment</label>
+	    <textarea name="fragment" id="fs" rows="16" cols="60"></textarea>
+	</div>
+    </div>
+    </details>
+    <div class="canvas-grid">
+	<script src="main.js" type="module"></script>
+
+	<canvas id="noise" width="256" height="256" style="border: 1px solid black;"></canvas>
+	<canvas id="grid"  width="256" height="256" style="border: 1px solid black;"></canvas>
+	<canvas id="tris"  width="256" height="256" style="border: 1px solid black;"></canvas>
+    </div>
+    </body>
+</html>

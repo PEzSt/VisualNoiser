@@ -1,15 +1,20 @@
 class Display
-        constructor: () ->
+        constructor: (@container) ->
                 
+        make_canvas: (name) ->
+                el = document.createElement 'canvas'
+                el.id = name
+                @container.appendChild el
+                el
 
         # TODO Resolve doubt: Is it too difficult to tell type of display?
         # Maybe different functions that return derived display?
         create_display: (name, type, res_x, res_y, gl_shape, vs, fs, vertices) ->
                 switch type
-                        when 'gl'    then (new GLCanvas name, res_x, res_y, gl_shape, vs, fs, vertices)
-                        when 'html'  then (new HtmlCanvas name, res_x, res_y)
+                        when 'gl'    then (new GLCanvas name, res_x, res_y, gl_shape, vs, fs, vertices, @make_canvas name)
+                        when 'html'  then (new HtmlCanvas name, res_x, res_y, @make_canvas name)
                         when 'sound' then (new SoundCanvas name, res_x, res_y)
-                        else (new HtmlCanvas name, res_x, res_y)
+                        else (new HtmlCanvas name, res_x, res_y, @make_canvas name)
 
         init: () ->
 
@@ -18,14 +23,13 @@ class Display
                 
 
 class HtmlCanvas extends Display
-        constructor: (@name, @res_x, @res_y) ->
+        constructor: (@name, @res_x, @res_y, @canvas) ->
                 super()
                 @type = 'html'
 
                 @init()
 
         init: () ->
-                @canvas = document.getElementById @name
                 @canvas.width = @res_x
                 @canvas.height = @res_x
                 @gl = @canvas.getContext "2d"
@@ -44,17 +48,16 @@ class HtmlCanvas extends Display
                 @draw img
 
 class GLCanvas extends Display
-        constructor: (@name, @res_x, @res_y, @gl_shape, v_shader, f_shader, @vertices, ps = 3) ->
+        constructor: (@name, @res_x, @res_y, @gl_shape, v_shader, f_shader, @vertices, @canvas, @ps=3) ->
                 super()
                 @type = 'gl'
 
                 @init()
                 @init_shaders v_shader, f_shader
-                @init_vertices @vertices, ps
+                @init_vertices @vertices, @ps
                 @init_noise()
 
         init: () ->
-                @canvas = document.getElementById @name
                 @canvas.width = @res_x
                 @canvas.height = @res_x
 
@@ -125,6 +128,10 @@ class GLCanvas extends Display
                 ma = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
                 perspective_matrix = mat4.perspectiveFromFieldOfView ma, 90, @res_x/@res_y, 1, 2000
 
+                #rotation_matrix = mat4.identity
+                #mat4.rotate rotation_matrix, rotation_matrix, 45, [1, 0, 0]
+                #mat4.multiply perspective_matrix, perspective_matrix, rotation_matrix
+
                 matrix_location = @gl.getUniformLocation @shader_program, "u_matrix"
                 @gl.uniformMatrix4fv matrix_location, false, perspective_matrix
 
@@ -143,6 +150,10 @@ class GLCanvas extends Display
                 @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.REPEAT
                 @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.REPEAT
 
+        recompile_shaders: (vs, fs) ->
+            @init_shaders vs, fs
+            @init_vertices @vertices, @ps
+            @init_noise()
 
         draw_colors: () ->
                 color_buffer = @gl.createBuffer()
@@ -186,7 +197,7 @@ class SoundCanvas extends Display
                 @lowpass_filter.type = 'lowpass'
                 @lowpass_filter.frequency.value = 400
                 @lowpass_filter.connect(@audio_ctx.destination)
-        
+
         init_source: () ->
                 @noise_source       = @audio_ctx.createBufferSource()
                 @noise_source.buffer = @buffer

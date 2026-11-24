@@ -89,6 +89,11 @@
 		</svg>
 	    </button>
 	</div>
+
+	<details class="panel" id="node-panel">
+	  <summary>Nodes</summary>
+	  <div id="node-panel-body"></div>
+	</details>
     </div>
     <details class="shaders">
     <summary>Shaders</summary>
@@ -103,12 +108,7 @@
 	</div>
     </div>
     </details>
-    <div class="canvas-grid">
-	<script src="main.js" type="module"></script>
-
-	<canvas id="noise" width="256" height="256" style="border: 1px solid black;"></canvas>
-	<canvas id="grid"  width="256" height="256" style="border: 1px solid black;"></canvas>
-	<canvas id="tris"  width="256" height="256" style="border: 1px solid black;"></canvas>
-    </div>
+    <div class="canvas-grid" id="canvas-grid"></div>
     </body>
+    <script src="main.js" type="module"></script>
 </html>
